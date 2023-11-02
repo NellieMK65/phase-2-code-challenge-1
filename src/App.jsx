@@ -22,6 +22,25 @@ function App() {
 		transaction.description.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
+	// persist the transaction gotten from AddTransactionForm component to db.json
+	const handleSaveTransaction = (transaction) => {
+		fetch(BASE_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(transaction),
+		})
+			.then((res) => res.json())
+			.then((newTransaction) =>
+				setTransactions((transactions) => [
+					...transactions,
+					newTransaction,
+				])
+			)
+			.catch((err) => console.log(err));
+	};
+
 	return (
 		<Box mx={10}>
 			<VStack spacing={4} align="stretch">
@@ -32,7 +51,9 @@ function App() {
 					setSearchTerm={setSearchTerm}
 				/>
 
-				<AddTransactionForm />
+				<AddTransactionForm
+					handleSaveTransaction={handleSaveTransaction}
+				/>
 
 				<TransactionTable transactions={filteredTransactions} />
 			</VStack>
