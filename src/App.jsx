@@ -1,12 +1,24 @@
-import { Container, Heading, VStack } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Box, Container, Heading, VStack } from '@chakra-ui/react';
 
 import SearchInput from './components/SearchInput';
 import AddTransactionForm from './components/AddTransactionForm';
 import TransactionTable from './components/TransactionTable';
 
+const BASE_URL = 'http://localhost:8001/transactions';
+
 function App() {
+	const [transactions, setTransactions] = useState([]);
+
+	useEffect(() => {
+		fetch(BASE_URL)
+			.then((res) => res.json())
+			.then((transactions) => setTransactions(transactions))
+			.catch((err) => console.log(err));
+	}, []);
+
 	return (
-		<Container maxW="container.sm">
+		<Box mx={10}>
 			<VStack spacing={4} align="stretch">
 				<Heading colorScheme="purple">Bank of Flatiron</Heading>
 
@@ -14,9 +26,9 @@ function App() {
 
 				<AddTransactionForm />
 
-				<TransactionTable />
+				<TransactionTable transactions={transactions} />
 			</VStack>
-		</Container>
+		</Box>
 	);
 }
 
