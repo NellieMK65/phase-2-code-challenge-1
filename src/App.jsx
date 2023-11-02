@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Heading, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, Select, VStack } from '@chakra-ui/react';
 
 import SearchInput from './components/SearchInput';
 import AddTransactionForm from './components/AddTransactionForm';
@@ -10,6 +10,7 @@ const BASE_URL = 'http://localhost:8001/transactions';
 function App() {
 	const [transactions, setTransactions] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
+	const [sortBy, setSortBy] = useState('');
 
 	useEffect(() => {
 		fetch(BASE_URL)
@@ -27,6 +28,18 @@ function App() {
 		)
 		// sort all transactions in a descending manner using the ids
 		.sort((a, b) => b.id - a.id);
+
+	// to sort alphabetically (asc)
+	// use localCompare method coming from string data type
+	const sortedTransactions = filteredTransactions.sort((a, b) => {
+		if (sortBy === 'category') {
+			return a.category.localeCompare(b.category);
+		} else if (sortBy === 'description') {
+			return a.description.localeCompare(b.description);
+		} else {
+			return 0;
+		}
+	});
 
 	// persist the transaction gotten from AddTransactionForm component to db.json
 	const handleSaveTransaction = (transaction) => {
@@ -77,8 +90,18 @@ function App() {
 					handleSaveTransaction={handleSaveTransaction}
 				/>
 
+				<Flex justifyContent={'end'}>
+					<Select
+						placeholder="Sort by"
+						onChange={(e) => setSortBy(e.target.value)}
+					>
+						<option value="category">Category</option>
+						<option value="description">Description</option>
+					</Select>
+				</Flex>
+
 				<TransactionTable
-					transactions={filteredTransactions}
+					transactions={sortedTransactions}
 					handleDelete={handleDelete}
 				/>
 			</VStack>
