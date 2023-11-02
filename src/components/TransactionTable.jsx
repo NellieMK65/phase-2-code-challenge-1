@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import TransactionItem from './TransactionItem';
 
-const TransactionTable = ({ transactions }) => {
+const TransactionTable = ({ transactions, handleDelete }) => {
 	return (
 		<TableContainer>
 			<Table variant="simple">
@@ -22,6 +22,7 @@ const TransactionTable = ({ transactions }) => {
 						<Th>Description</Th>
 						<Th>Category</Th>
 						<Th isNumeric>Amount</Th>
+						<Th>Actions</Th>
 					</Tr>
 				</Thead>
 
@@ -30,6 +31,7 @@ const TransactionTable = ({ transactions }) => {
 						<TransactionItem
 							key={transaction.id}
 							{...transaction}
+							handleDelete={handleDelete}
 						/>
 					))}
 				</Tbody>
